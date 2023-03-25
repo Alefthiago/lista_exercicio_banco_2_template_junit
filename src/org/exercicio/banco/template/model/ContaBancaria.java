@@ -4,9 +4,9 @@ import java.util.Objects;
 
 /**
 *
-* Nome:
-* Curso:
-* Matrícula:
+* Nome: Alef Thiago
+* Curso: IPI
+* Matrícula: 20222infig0019
 * 
 */
 public class ContaBancaria {
@@ -53,7 +53,11 @@ public class ContaBancaria {
 	 * @param valor
 	 */
 	public void depositar(double valor) {
-		
+		if(valor > 0){
+			this.saldo += valor;
+		}else {
+			System.out.print("Valor invalido para deposito.");
+		}
 	}
 
 	/**
@@ -69,6 +73,15 @@ public class ContaBancaria {
 	 * @param valor
 	 */
 	public void sacar(double valor) {
+		if(!status) {
+			System.out.print("Conta inativa.");
+		}else if(valor <= 0) {
+			System.out.print("Valor invalido para saque.");
+		}else if(valor > saldo) {
+			System.out.print("Saldo insuficiente.");
+		}else {
+			saldo -= valor;
+		}
 		
 	}
 
@@ -81,7 +94,15 @@ public class ContaBancaria {
 	 * fechar a conta. Utilize System.out.print();
 	 */
 	public void fecharConta() {
-		
+		if(this.status) {
+			if(this.saldo > 0) {
+				System.out.print("Conta com saldo. Nao eh possivel fecha-la.");
+			}else {
+				this.status = false;
+			}
+		}else {
+			System.out.print("Conta ja inativa.");
+		}
 	}
 
 	/**
@@ -90,7 +111,11 @@ public class ContaBancaria {
 	 * ativa." deve ser exibida no console. Utilize System.out.print();
 	 */
 	public void reabrirConta() {
-
+		if(this.status) {
+			System.out.print("Conta já ativa.");
+		}else {
+			this.status = true;
+		}
 	}
 
 	/**
@@ -108,7 +133,16 @@ public class ContaBancaria {
 	 * @param destino
 	 */
 	public void realizarTransferencia(double quantia, ContaBancaria destino) {
-
+		if(!this.status) {
+			System.out.print("Conta de origem inativa.");
+		}else if(!destino.status) {
+			System.out.print("Conta de destino inativa.");
+		}else if(quantia > this.saldo) {
+			System.out.print("Saldo insuficiente para transferencia.");
+		}else {
+			this.saldo -= quantia;
+			destino.saldo += quantia;
+		}
 	}
 
 	public int getNumeroConta() {
@@ -132,7 +166,7 @@ public class ContaBancaria {
 	 */
 	@Override
 	public int hashCode() {
-		return 0;
+		return Objects.hash(numeroConta, saldo, titular, status);
 	}
 
 	/**
@@ -140,8 +174,12 @@ public class ContaBancaria {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return false;
-	}
-	
-	
+		if (obj == this)
+			return true;
+		if (!(obj instanceof ContaBancaria)) {
+			return false;
+		}
+		ContaBancaria contaBancaria = (ContaBancaria) obj;
+		return numeroConta == contaBancaria.numeroConta && saldo == contaBancaria.saldo && Objects.equals(titular, contaBancaria.titular) && status == contaBancaria.status;
+	}	
 }
